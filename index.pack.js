@@ -504,6 +504,9 @@ if (process.env.NODE_ENV === 'production') {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 exports.default = App;
 
 var _react = __webpack_require__(1);
@@ -517,29 +520,30 @@ var _Die2 = _interopRequireDefault(_Die);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function App() {
+  var _React$useState = _react2.default.useState(allNewDice()),
+      _React$useState2 = _slicedToArray(_React$useState, 2),
+      arrayOfNumbers = _React$useState2[0],
+      setArrayOfNumbers = _React$useState2[1];
+
   function allNewDice() {
-    var randomNumber = Math.ceil(Math.random() * 6);
-    console.log(randomNumber);
-    return randomNumber;
+    var arrayOfRandomNumber = [];
+    for (var i = 0; i < 10; i++) {
+      arrayOfRandomNumber.push(Math.ceil(Math.random() * 6));
+    }
+    return arrayOfRandomNumber;
   }
 
-  allNewDice();
+  var diceElements = arrayOfNumbers.map(function (dice) {
+    return _react2.default.createElement(_Die2.default, { value: dice });
+  });
+
   return _react2.default.createElement(
     "main",
     null,
     _react2.default.createElement(
       "div",
       { className: "dice-container" },
-      _react2.default.createElement(_Die2.default, { value: "1" }),
-      _react2.default.createElement(_Die2.default, { value: "2" }),
-      _react2.default.createElement(_Die2.default, { value: "2" }),
-      _react2.default.createElement(_Die2.default, { value: "6" }),
-      _react2.default.createElement(_Die2.default, { value: "5" }),
-      _react2.default.createElement(_Die2.default, { value: "4" }),
-      _react2.default.createElement(_Die2.default, { value: "3" }),
-      _react2.default.createElement(_Die2.default, { value: "3" }),
-      _react2.default.createElement(_Die2.default, { value: "1" }),
-      _react2.default.createElement(_Die2.default, { value: "2" })
+      diceElements
     )
   );
 }
@@ -641,13 +645,7 @@ var _App2 = _interopRequireDefault(_App);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_reactDom2.default.render(_react2.default.createElement(_App2.default, null), document.querySelector("#root")); /**
-                                                                                                                 * Challenge: Start a brand new React app!
-                                                                                                                 * - Create a separate App component
-                                                                                                                 * - Import and render the App component here
-                                                                                                                 * - In the App component, render a <main> element
-                                                                                                                 * - Style everything to look like the slide
-                                                                                                                 */
+_reactDom2.default.render(_react2.default.createElement(_App2.default, null), document.querySelector("#root"));
 
 /***/ }),
 /* 9 */
