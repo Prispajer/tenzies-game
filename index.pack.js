@@ -517,6 +517,13 @@ var _Die2 = _interopRequireDefault(_Die);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function App() {
+  function allNewDice() {
+    var randomNumber = Math.ceil(Math.random() * 6);
+    console.log(randomNumber);
+    return randomNumber;
+  }
+
+  allNewDice();
   return _react2.default.createElement(
     "main",
     null,
