@@ -43,3 +43,20 @@ main {
 .dice-number {
   font-size: 30px;
 }
+
+button {
+  margin: 60px auto 0 auto;
+  outline: none;
+  border: none;
+  background-color: #5035ff;
+  width: 150px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+}
