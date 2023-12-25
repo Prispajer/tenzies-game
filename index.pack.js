@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -264,9 +264,9 @@ process.umask = function() { return 0; };
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(13);
+  module.exports = __webpack_require__(16);
 } else {
-  module.exports = __webpack_require__(12);
+  module.exports = __webpack_require__(15);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
@@ -385,9 +385,9 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 var printWarning = function() {};
 
 if (process.env.NODE_ENV !== 'production') {
-  var ReactPropTypesSecret = __webpack_require__(8);
+  var ReactPropTypesSecret = __webpack_require__(11);
   var loggedTypeFailures = {};
-  var has = __webpack_require__(9);
+  var has = __webpack_require__(12);
 
   printWarning = function(text) {
     var message = 'Warning: ' + text;
@@ -487,9 +487,9 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(17);
+  module.exports = __webpack_require__(20);
 } else {
-  module.exports = __webpack_require__(16);
+  module.exports = __webpack_require__(19);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
@@ -513,9 +513,11 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Die = __webpack_require__(19);
+var _Die = __webpack_require__(7);
 
 var _Die2 = _interopRequireDefault(_Die);
+
+var _nanoid = __webpack_require__(9);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -528,8 +530,14 @@ function App() {
   function allNewDice() {
     var newDice = [];
     for (var i = 0; i < 10; i++) {
-      newDice.push(Math.ceil(Math.random() * 6));
+      newDice.push({
+        value: Math.ceil(Math.random() * 6),
+        isHeld: false,
+        id: (0, _nanoid.nanoid)()
+      });
     }
+    console.log(newDice);
+
     return newDice;
   }
 
@@ -539,7 +547,7 @@ function App() {
   }
 
   var diceElements = dice.map(function (die) {
-    return _react2.default.createElement(_Die2.default, { value: die });
+    return _react2.default.createElement(_Die2.default, { key: die.id, value: die.value, isHeld: die.isHeld });
   });
 
   return _react2.default.createElement(
@@ -597,15 +605,52 @@ if (process.env.NODE_ENV === 'production') {
   // DCE check should happen before ReactDOM bundle executes so that
   // DevTools can report bad minification during injection.
   checkDCE();
-  module.exports = __webpack_require__(11);
+  module.exports = __webpack_require__(14);
 } else {
-  module.exports = __webpack_require__(10);
+  module.exports = __webpack_require__(13);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = Die;
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function Die(_ref) {
+  var value = _ref.value,
+      isHeld = _ref.isHeld;
+
+  var styles = {
+    backgroundColor: isHeld ? "#59E391" : "white"
+  };
+
+  return _react2.default.createElement(
+    "div",
+    { className: "game-container", style: styles },
+    _react2.default.createElement(
+      "h3",
+      { className: "dice-number" },
+      value
+    )
+  );
+}
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -628,7 +673,65 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 _reactDom2.default.render(_react2.default.createElement(_App2.default, null), document.querySelector("#root"));
 
 /***/ }),
-/* 8 */
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "random", function() { return random; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "customRandom", function() { return customRandom; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "customAlphabet", function() { return customAlphabet; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "nanoid", function() { return nanoid; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__url_alphabet_index_js__ = __webpack_require__(10);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "urlAlphabet", function() { return __WEBPACK_IMPORTED_MODULE_0__url_alphabet_index_js__["a"]; });
+
+let random = bytes => crypto.getRandomValues(new Uint8Array(bytes))
+let customRandom = (alphabet, defaultSize, getRandom) => {
+  let mask = (2 << (Math.log(alphabet.length - 1) / Math.LN2)) - 1
+  let step = -~((1.6 * mask * defaultSize) / alphabet.length)
+  return (size = defaultSize) => {
+    let id = ''
+    while (true) {
+      let bytes = getRandom(step)
+      let j = step
+      while (j--) {
+        id += alphabet[bytes[j] & mask] || ''
+        if (id.length === size) return id
+      }
+    }
+  }
+}
+let customAlphabet = (alphabet, size = 21) =>
+  customRandom(alphabet, size, random)
+let nanoid = (size = 21) =>
+  crypto.getRandomValues(new Uint8Array(size)).reduce((id, byte) => {
+    byte &= 63
+    if (byte < 36) {
+      id += byte.toString(36)
+    } else if (byte < 62) {
+      id += (byte - 26).toString(36).toUpperCase()
+    } else if (byte > 62) {
+      id += '-'
+    } else {
+      id += '_'
+    }
+    return id
+  }, '')
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const urlAlphabet =
+  'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict'
+/* harmony export (immutable) */ __webpack_exports__["a"] = urlAlphabet;
+
+
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -647,14 +750,14 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 9 */
+/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = Function.call.bind(Object.prototype.hasOwnProperty);
 
 
 /***/ }),
-/* 10 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -679,7 +782,7 @@ var React = __webpack_require__(1);
 var _assign = __webpack_require__(2);
 var Scheduler = __webpack_require__(4);
 var checkPropTypes = __webpack_require__(3);
-var tracing = __webpack_require__(18);
+var tracing = __webpack_require__(21);
 
 var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED; // Prevent newer renderers from RTE when used with older react package versions.
 // Current owner and dispatcher used to share the same ref,
@@ -25674,7 +25777,7 @@ exports.version = ReactVersion;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 11 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25973,7 +26076,7 @@ exports.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!gk(c))throw Er
 
 
 /***/ }),
-/* 12 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27893,7 +27996,7 @@ exports.version = ReactVersion;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 13 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27925,7 +28028,7 @@ exports.useLayoutEffect=function(a,b){return Z().useLayoutEffect(a,b)};exports.u
 
 
 /***/ }),
-/* 14 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28282,7 +28385,7 @@ exports.unstable_wrap = unstable_wrap;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 15 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28299,7 +28402,7 @@ var b=0;exports.__interactionsRef=null;exports.__subscriberRef=null;exports.unst
 
 
 /***/ }),
-/* 16 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29165,7 +29268,7 @@ exports.unstable_wrapCallback = unstable_wrapCallback;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 17 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29193,51 +29296,19 @@ exports.unstable_shouldYield=function(){var a=exports.unstable_now();V(a);var b=
 
 
 /***/ }),
-/* 18 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(15);
+  module.exports = __webpack_require__(18);
 } else {
-  module.exports = __webpack_require__(14);
+  module.exports = __webpack_require__(17);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = Die;
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function Die(_ref) {
-  var value = _ref.value;
-
-  return _react2.default.createElement(
-    "div",
-    { className: "game-container" },
-    _react2.default.createElement(
-      "h3",
-      { className: "dice-number" },
-      value
-    )
-  );
-}
 
 /***/ })
 /******/ ]);
