@@ -23,7 +23,11 @@ export default function App() {
   }
 
   function holdDice(id) {
-    console.log(id);
+    setDice((prevDice) =>
+      prevDice.map((dice) => {
+        return dice.id === id ? { ...dice, isHeld: !dice.isHeld } : dice;
+      })
+    );
   }
 
   const diceElements = dice.map((die) => (
