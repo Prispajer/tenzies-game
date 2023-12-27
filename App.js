@@ -1,5 +1,5 @@
 import React from "react";
-import Die from "./components/Die";
+import Die from "./Die";
 import { nanoid } from "nanoid";
 
 export default function App() {
@@ -8,18 +8,25 @@ export default function App() {
   function allNewDice() {
     const newDice = [];
     for (let i = 0; i < 10; i++) {
-      newDice.push({
-        value: Math.ceil(Math.random() * 6),
-        isHeld: false,
-        id: nanoid(),
-      });
+      newDice.push(createNewDice());
     }
     return newDice;
   }
 
+  function createNewDice() {
+    return {
+      value: Math.ceil(Math.random() * 6),
+      isHeld: false,
+      id: nanoid(),
+    };
+  }
+
   function newRoll() {
-    const newDice = allNewDice();
-    setDice(newDice);
+    setDice((prevDice) =>
+      prevDice.map((dice) => {
+        return dice.isHeld ? dice : createNewDice();
+      })
+    );
   }
 
   function holdDice(id) {
@@ -36,6 +43,7 @@ export default function App() {
       value={die.value}
       isHeld={die.isHeld}
       holdDice={() => holdDice(die.id)}
+      checkExistingDice={() => checkExistingDice(die.isHeld)}
     />
   ));
 
