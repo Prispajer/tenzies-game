@@ -1,6 +1,7 @@
 import React from "react";
-import Die from "./Die";
+import Die from "./components/Die";
 import { nanoid } from "nanoid";
+import Confetti from "react-confetti";
 
 export default function App() {
   const [dices, setDice] = React.useState(allNewDice());
@@ -12,9 +13,6 @@ export default function App() {
 
     if (allDices && allDicesValue) {
       setTenzies(true);
-      console.log("YOU WON!");
-    } else {
-      setTenzies(false);
     }
   }, [dices]);
 
@@ -34,12 +32,19 @@ export default function App() {
     };
   }
 
+  function resetGame() {
+    setDice(allNewDice());
+  }
+
   function newRoll() {
-    setDice((prevDice) =>
-      prevDice.map((dice) => {
-        return dice.isHeld ? dice : createNewDice();
-      })
-    );
+    if (!tenzies) {
+      setDice((prevDice) =>
+        prevDice.map((dice) => (dice.isHeld ? dice : createNewDice()))
+      );
+    } else {
+      setDice(allNewDice());
+      setTenzies(false);
+    }
   }
 
   function holdDice(id) {
@@ -61,6 +66,7 @@ export default function App() {
 
   return (
     <main>
+      {tenzies && <Confetti />}
       <div className="dice-header">
         <h1>Tenzies</h1>
         <h3>
@@ -69,7 +75,9 @@ export default function App() {
         </h3>
       </div>
       <div className="dice-container">{diceElements}</div>
-      <button onClick={newRoll}>Roll</button>
+      <button className="roll-dice" onClick={newRoll}>
+        {tenzies ? "New Game" : "Roll"}
+      </button>
     </main>
   );
 }
