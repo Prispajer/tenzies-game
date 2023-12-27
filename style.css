@@ -8,17 +8,17 @@ body {
   background-color: #0b2434;
   display: grid;
   place-items: center;
+  height: 100vh;
 }
 
 main {
-  width: 800px;
-  height: 400px;
+  width: 100%;
+  max-width: 800px;
   background-color: #ffffff;
   border-radius: 20px;
-  padding: 20px;
+  padding: 20px 60px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 .game-container {
@@ -45,7 +45,7 @@ main {
 }
 
 button {
-  margin: 60px auto 0 auto;
+  margin: 40px auto 0 auto;
   outline: none;
   border: none;
   background-color: #5035ff;
@@ -65,4 +65,15 @@ button {
   display: flex;
   align-items: center;
   flex-direction: column;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+  main {
+    padding: 20px;
+  }
+
+  .dice-container {
+    gap: 10px;
+  }
 }
