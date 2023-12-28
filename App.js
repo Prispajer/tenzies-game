@@ -6,6 +6,7 @@ import Confetti from "react-confetti";
 export default function App() {
   const [dices, setDice] = React.useState(allNewDice());
   const [tenzies, setTenzies] = React.useState(false);
+  const [roll, setRoll] = React.useState(0);
 
   React.useEffect(() => {
     const allDices = dices.every((dice) => dice.isHeld);
@@ -32,15 +33,12 @@ export default function App() {
     };
   }
 
-  function resetGame() {
-    setDice(allNewDice());
-  }
-
   function newRoll() {
     if (!tenzies) {
       setDice((prevDice) =>
         prevDice.map((dice) => (dice.isHeld ? dice : createNewDice()))
       );
+      setRoll((prevRoll) => prevRoll + 1);
     } else {
       setDice(allNewDice());
       setTenzies(false);
@@ -50,7 +48,9 @@ export default function App() {
   function holdDice(id) {
     setDice((prevDice) =>
       prevDice.map((dice) => {
-        return dice.id === id ? { ...dice, isHeld: !dice.isHeld } : dice;
+        return dice.id === id
+          ? Object.assign({}, dice, { isHeld: !dice.isHeld })
+          : dice;
       })
     );
   }
@@ -78,6 +78,7 @@ export default function App() {
       <button className="roll-dice" onClick={newRoll}>
         {tenzies ? "New Game" : "Roll"}
       </button>
+      <h4>{`Number of rolls: ${roll}`} </h4>
     </main>
   );
 }
