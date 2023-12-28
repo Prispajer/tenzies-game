@@ -57,6 +57,8 @@ export default function App() {
     } else {
       setDice(allNewDice());
       setTenzies(false);
+      setTime(0);
+      setRoll(0);
     }
   }
 
