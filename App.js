@@ -7,6 +7,7 @@ export default function App() {
   const [dices, setDice] = React.useState(allNewDice());
   const [tenzies, setTenzies] = React.useState(false);
   const [roll, setRoll] = React.useState(0);
+  const [time, setTime] = React.useState(0);
 
   React.useEffect(() => {
     const allDices = dices.every((dice) => dice.isHeld);
@@ -16,6 +17,20 @@ export default function App() {
       setTenzies(true);
     }
   }, [dices]);
+
+  React.useEffect(() => {
+    let interval;
+    if (!tenzies) {
+      interval = setInterval(() => {
+        setTime((prevTime) => prevTime + 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+  }, [tenzies]);
 
   function allNewDice() {
     const newDice = [];
@@ -78,6 +93,7 @@ export default function App() {
       <button className="roll-dice" onClick={newRoll}>
         {tenzies ? "New Game" : "Roll"}
       </button>
+      <h4>{`Your time: ${time}`}</h4>
       <h4>{`Number of rolls: ${roll}`} </h4>
     </main>
   );
