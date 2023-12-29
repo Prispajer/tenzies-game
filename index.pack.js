@@ -547,6 +547,13 @@ function App() {
       setTime = _React$useState8[1];
 
   _react2.default.useEffect(function () {
+    var handleBeforeUnload = function handleBeforeUnload() {
+      localStorage.clear();
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+  }, []);
+
+  _react2.default.useEffect(function () {
     var allDices = dices.every(function (dice) {
       return dice.isHeld;
     });
@@ -564,13 +571,16 @@ function App() {
     if (!tenzies) {
       interval = setInterval(function () {
         setTime(function (prevTime) {
-          parseInt(localStorage.setItem("playTime", prevTime + 1));
+          localStorage.setItem("playTime", prevTime + 1);
           return prevTime + 1;
         });
       }, 1000);
     } else {
       clearInterval(interval);
     }
+    return function () {
+      clearInterval(interval);
+    };
   }, [tenzies]);
 
   function allNewDice() {
