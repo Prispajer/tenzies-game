@@ -546,6 +546,11 @@ function App() {
       time = _React$useState8[0],
       setTime = _React$useState8[1];
 
+  var _React$useState9 = _react2.default.useState(localStorage.getItem("bestTime") || 0),
+      _React$useState10 = _slicedToArray(_React$useState9, 2),
+      bestTime = _React$useState10[0],
+      setBestTime = _React$useState10[1];
+
   _react2.default.useEffect(function () {
     var handleBeforeUnload = function handleBeforeUnload() {
       localStorage.clear();
@@ -571,8 +576,15 @@ function App() {
     if (!tenzies) {
       interval = setInterval(function () {
         setTime(function (prevTime) {
-          localStorage.setItem("playTime", prevTime + 1);
-          return prevTime + 1;
+          var currentTime = prevTime + 1;
+          localStorage.setItem("playTime", currentTime);
+
+          if (!bestTime || currentTime < bestTime) {
+            localStorage.setItem("bestTime", currentTime);
+          } else {
+            localStorage.setItem("bestTime", bestTime);
+          }
+          return currentTime;
         });
       }, 1000);
     } else {
@@ -581,7 +593,7 @@ function App() {
     return function () {
       clearInterval(interval);
     };
-  }, [tenzies]);
+  }, [tenzies, bestTime]);
 
   function allNewDice() {
     var newDice = [];
@@ -607,10 +619,11 @@ function App() {
         });
       });
       setRoll(function (prevRoll) {
-        parseInt(localStorage.setItem("rollTime", prevRoll + 1));
+        localStorage.setItem("rollTime", prevRoll + 1);
         return prevRoll + 1;
       });
     } else {
+      setBestTime(localStorage.getItem("bestTime"));
       setDice(allNewDice());
       setTenzies(false);
       setTime(0);
@@ -668,13 +681,18 @@ function App() {
     _react2.default.createElement(
       "h4",
       null,
-      "Your time: " + time
+      "Elapsed time: " + time
     ),
     _react2.default.createElement(
       "h4",
       null,
       "Number of rolls: " + roll,
       " "
+    ),
+    _react2.default.createElement(
+      "h4",
+      null,
+      "Best time : " + bestTime
     )
   );
 }

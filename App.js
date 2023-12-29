@@ -8,6 +8,9 @@ export default function App() {
   const [tenzies, setTenzies] = React.useState(false);
   const [roll, setRoll] = React.useState(localStorage.getItem("rollTime") || 0);
   const [time, setTime] = React.useState(localStorage.getItem("playTime") || 0);
+  const [bestTime, setBestTime] = React.useState(
+    localStorage.getItem("bestTime") || 0
+  );
 
   React.useEffect(() => {
     const handleBeforeUnload = () => {
@@ -30,8 +33,15 @@ export default function App() {
     if (!tenzies) {
       interval = setInterval(() => {
         setTime((prevTime) => {
-          localStorage.setItem("playTime", prevTime + 1);
-          return prevTime + 1;
+          let currentTime = prevTime + 1;
+          localStorage.setItem("playTime", currentTime);
+
+          if (!bestTime || currentTime < bestTime) {
+            localStorage.setItem("bestTime", currentTime);
+          } else {
+            localStorage.setItem("bestTime", bestTime);
+          }
+          return currentTime;
         });
       }, 1000);
     } else {
@@ -40,7 +50,7 @@ export default function App() {
     return () => {
       clearInterval(interval);
     };
-  }, [tenzies]);
+  }, [tenzies, bestTime]);
 
   function allNewDice() {
     const newDice = [];
@@ -64,10 +74,11 @@ export default function App() {
         prevDice.map((dice) => (dice.isHeld ? dice : createNewDice()))
       );
       setRoll((prevRoll) => {
-        parseInt(localStorage.setItem("rollTime", prevRoll + 1));
+        localStorage.setItem("rollTime", prevRoll + 1);
         return prevRoll + 1;
       });
     } else {
+      setBestTime(localStorage.getItem("bestTime"));
       setDice(allNewDice());
       setTenzies(false);
       setTime(0);
@@ -108,8 +119,9 @@ export default function App() {
       <button className="roll-dice" onClick={newRoll}>
         {tenzies ? "New Game" : "Roll"}
       </button>
-      <h4>{`Your time: ${time}`}</h4>
+      <h4>{`Elapsed time: ${time}`}</h4>
       <h4>{`Number of rolls: ${roll}`} </h4>
+      <h4>{`Best time : ${bestTime}`}</h4>
     </main>
   );
 }
