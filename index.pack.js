@@ -536,12 +536,12 @@ function App() {
       tenzies = _React$useState4[0],
       setTenzies = _React$useState4[1];
 
-  var _React$useState5 = _react2.default.useState(0),
+  var _React$useState5 = _react2.default.useState(localStorage.getItem("rollTime") || 0),
       _React$useState6 = _slicedToArray(_React$useState5, 2),
       roll = _React$useState6[0],
       setRoll = _React$useState6[1];
 
-  var _React$useState7 = _react2.default.useState(0),
+  var _React$useState7 = _react2.default.useState(localStorage.getItem("playTime") || 0),
       _React$useState8 = _slicedToArray(_React$useState7, 2),
       time = _React$useState8[0],
       setTime = _React$useState8[1];
@@ -564,15 +564,13 @@ function App() {
     if (!tenzies) {
       interval = setInterval(function () {
         setTime(function (prevTime) {
+          parseInt(localStorage.setItem("playTime", prevTime + 1));
           return prevTime + 1;
         });
       }, 1000);
     } else {
       clearInterval(interval);
     }
-    return function () {
-      clearInterval(interval);
-    };
   }, [tenzies]);
 
   function allNewDice() {
@@ -599,6 +597,7 @@ function App() {
         });
       });
       setRoll(function (prevRoll) {
+        parseInt(localStorage.setItem("rollTime", prevRoll + 1));
         return prevRoll + 1;
       });
     } else {

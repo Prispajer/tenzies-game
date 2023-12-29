@@ -6,8 +6,8 @@ import Confetti from "react-confetti";
 export default function App() {
   const [dices, setDice] = React.useState(allNewDice());
   const [tenzies, setTenzies] = React.useState(false);
-  const [roll, setRoll] = React.useState(0);
-  const [time, setTime] = React.useState(0);
+  const [roll, setRoll] = React.useState(localStorage.getItem("rollTime") || 0);
+  const [time, setTime] = React.useState(localStorage.getItem("playTime") || 0);
 
   React.useEffect(() => {
     const allDices = dices.every((dice) => dice.isHeld);
@@ -22,14 +22,14 @@ export default function App() {
     let interval;
     if (!tenzies) {
       interval = setInterval(() => {
-        setTime((prevTime) => prevTime + 1);
+        setTime((prevTime) => {
+          parseInt(localStorage.setItem("playTime", prevTime + 1));
+          return prevTime + 1;
+        });
       }, 1000);
     } else {
       clearInterval(interval);
     }
-    return () => {
-      clearInterval(interval);
-    };
   }, [tenzies]);
 
   function allNewDice() {
@@ -53,7 +53,10 @@ export default function App() {
       setDice((prevDice) =>
         prevDice.map((dice) => (dice.isHeld ? dice : createNewDice()))
       );
-      setRoll((prevRoll) => prevRoll + 1);
+      setRoll((prevRoll) => {
+        parseInt(localStorage.setItem("rollTime", prevRoll + 1));
+        return prevRoll + 1;
+      });
     } else {
       setDice(allNewDice());
       setTenzies(false);
